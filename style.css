@@ -1,0 +1,38 @@
+#Map{
+    position: absolute;
+    top: 25px;
+    left: 250px;
+    width: 500px;
+    height: 750px;
+    background-color: white;
+    border-style: solid;
+    border-width: 8px;
+}
+
+#TeamList{
+    position: absolute;
+    width:500px;
+    top:25px;
+    height: 400px;
+}
+
+#TeamTitle{
+    font-weight: bold;
+}
+
+#TeamInfo{
+    position: absolute;
+    width:300px;
+    top:25px;
+    height: 500px;
+    overflow:auto;
+}
+
+#Instructions{
+    position: absolute;
+    width:300px;
+    top:25px;
+    left: 770px;
+    height: 500px;
+    overflow:auto;
+}
