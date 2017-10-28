@@ -1,5 +1,7 @@
 This is my very simple, un-polished, zombie survival simulator game. Your party (and the main character, James Carregan) are denoted by a red circle. Humans (trustworthy or un-trustworthy, infected or un-infected) are denoted by blue circles. Zombies are denoted by grey circles. The point of the game is to survive as long as possible. 
 
+Food is denoted as small yellow circles. The yellow circles will disappear when all of the resources have been picked up by your party. If the yellow circles remain, it means more resources are still available at that location but your party is carrying all the food they can manage. Once food is consumed you will be able to return to these locations until the yellow circles disappear and the food resources run out at that location.
+
 The game involves meeting survivors who have varying degrees of
  - trustworthiness
  - strength
