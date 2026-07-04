@@ -1,25 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
-    <link rel='stylesheet' href='style.css'/>
-    <script src='script.js'></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zombie Survival Simulator — 8-Bit Edition</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
-
 <body>
-    
-    <input type="button" value="Start" onclick="runGame()">
-    <h3 id="TeamTitle"></h3>
-    <div id="TeamList"><h5 id="TeamInfo"></h5></div>
-    <div id="Instructions"></div>
-    
-    <canvas id="Map" width="500" height="700" style="border:3px solid #c3c3c3;">
-    Your browser does not support the HTML5 canvas tag.
-    </canvas>
-   <!-- <input type="button" id="North" value="North" onclick="travelNorth()"> -->
-   <!-- <input type="button" id="South" value="South" onclick="travelSouth()"> -->
-   <!-- <input type="button" id="East" value="East" onclick="travelEast()"> -->
-   <!-- <input type="button" id="West" value="West" onclick="travelWest()"> -->
+
+<header id="topbar">
+  <div id="logo">ZOMBIE SURVIVAL SIMULATOR <span class="edition">8-BIT EDITION</span></div>
+  <div id="topbar-right">
+    <button id="btn-sound" class="pxbtn" title="Toggle sound">SOUND: ON</button>
+    <button id="btn-crt" class="pxbtn" title="Toggle CRT scanlines">CRT: ON</button>
+    <button id="btn-restart" class="pxbtn" title="Restart run">RESTART</button>
+  </div>
+</header>
+
+<main id="layout">
+
+  <section id="stage" class="crt">
+    <canvas id="screen" width="336" height="208"></canvas>
+
+    <!-- Title screen -->
+    <div id="title-screen" class="overlay">
+      <div class="title-art">
+        <div class="title-big">ZOMBIE<br>SURVIVAL<br>SIMULATOR</div>
+        <div class="title-sub">— 8-BIT EDITION —</div>
+      </div>
+      <div class="title-story">
+        The dead walk. You are <b>James Carregan</b>, and the road is long.<br>
+        Scavenge food, recruit survivors, and judge carefully who you trust —<br>
+        every stranger is a pair of hands... or a knife in the dark.
+      </div>
+      <div class="blink" id="press-start">PRESS ENTER TO BEGIN</div>
+      <div class="title-keys">
+        ARROWS / WASD&nbsp;move &nbsp;·&nbsp; SPACE&nbsp;wait &nbsp;·&nbsp; E&nbsp;eat &nbsp;·&nbsp; M&nbsp;medkit &nbsp;·&nbsp; C&nbsp;serum &nbsp;·&nbsp; 1-4&nbsp;formation
+      </div>
+    </div>
+
+    <!-- Encounter dialog -->
+    <div id="encounter" class="overlay hidden">
+      <div class="dialog-box">
+        <div class="dialog-head">
+          <canvas id="enc-portrait" width="16" height="16"></canvas>
+          <div>
+            <div id="enc-name" class="enc-name"></div>
+            <div id="enc-tagline" class="enc-tagline"></div>
+          </div>
+        </div>
+        <div id="enc-stats" class="enc-stats"></div>
+        <div id="enc-traits" class="enc-traits"></div>
+        <div id="enc-text" class="enc-text"></div>
+        <div id="enc-buttons" class="enc-buttons"></div>
+      </div>
+    </div>
+
+    <!-- Game over -->
+    <div id="gameover-screen" class="overlay hidden">
+      <div class="go-title">YOUR STORY ENDS HERE</div>
+      <div id="go-stats" class="go-stats"></div>
+      <div class="blink">PRESS ENTER TO TRY AGAIN</div>
+    </div>
+  </section>
+
+  <aside id="sidebar">
+    <div class="panel" id="hud-panel">
+      <div id="hud-clock">
+        <span id="hud-day">DAY 1</span>
+        <span id="hud-time">08:00</span>
+        <span id="hud-phase">☀</span>
+      </div>
+      <div id="hud-resources">
+        <span class="res res-food" title="Food">🍖 <b id="hud-food">0</b></span>
+        <span class="res res-med" title="Medkits">✚ <b id="hud-med">0</b></span>
+        <span class="res res-serum" title="Serums (cure infection)">◉ <b id="hud-serum">0</b></span>
+      </div>
+      <div id="hud-actions">
+        <button class="pxbtn small" id="btn-eat" title="E — feed the wounded (1 food = 20 HP)">EAT [E]</button>
+        <button class="pxbtn small" id="btn-med" title="M — use a medkit on the most wounded (+40 HP)">MEDKIT [M]</button>
+        <button class="pxbtn small" id="btn-serum" title="C — cure the most far-gone infected member">SERUM [C]</button>
+      </div>
+      <div id="hud-sorts">
+        <span class="sort-label">FORMATION:</span>
+        <button class="pxbtn small" id="btn-sort-str" title="1 — strongest fight first">STR [1]</button>
+        <button class="pxbtn small" id="btn-sort-hp" title="2 — healthiest fight first">HP [2]</button>
+        <button class="pxbtn small" id="btn-sort-imm" title="3 — most immune fight first">IMM [3]</button>
+        <button class="pxbtn small" id="btn-sort-weak" title="4 — shield the weakest (lowest HP last)">GUARD [4]</button>
+      </div>
+    </div>
+
+    <div class="panel" id="party-panel">
+      <div class="panel-title">PARTY <span id="party-count"></span></div>
+      <div id="party-list"></div>
+    </div>
+
+    <div class="panel" id="map-panel">
+      <div class="panel-title">MAP</div>
+      <canvas id="minimap" width="96" height="96"></canvas>
+    </div>
+
+    <div class="panel" id="log-panel">
+      <div class="panel-title">LOG</div>
+      <div id="log"></div>
+    </div>
+  </aside>
+
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/world.js"></script>
+<script src="js/entities.js"></script>
+<script src="js/render.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
