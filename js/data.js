@@ -33,7 +33,7 @@ const ZOMBIE_CAP = 320;
 const DIFFICULTIES = {
   easy:   { name: "Easy",   zombieMult: 0.25, serums: 8, leaderImmun: 3,
             desc: "A quarter of the horde. James is immune to the virus." },
-  normal: { name: "Normal", zombieMult: 0.5,  serums: 6, leaderImmun: 1,
+  normal: { name: "Normal", zombieMult: 0.5,  serums: 6, leaderImmun: 2,
             desc: "The standard apocalypse. Half the horde." },
   hard:   { name: "Hard",   zombieMult: 1,    serums: 4, leaderImmun: 0,
             desc: "The full horde, and James has no immunity. Good luck." },

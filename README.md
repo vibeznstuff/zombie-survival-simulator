@@ -16,7 +16,7 @@ Pick a difficulty on the title screen, then hit START. Best runs are tracked per
 | Difficulty | Horde size | Serums on the map | James's immunity |
 | --- | --- | --- | --- |
 | Easy | ¼ | 8 | Immune — he can never turn |
-| Normal | ½ | 6 | Low |
+| Normal | ½ | 6 | Moderate |
 | Hard | full | 4 | None |
 
 You are **James Carregan**. The world moves only when you do — every step is one in-game hour.
