@@ -9,10 +9,16 @@ sound effects. No frameworks, no build step, no dependencies: pure HTML5 canvas 
 
 ## Play
 
-Open `index.html` in any modern browser. That's it.
+Open `index.html` in any modern browser — desktop or mobile. That's it.
+
+Pick a difficulty on the title screen (**Easy** ¼ of the horde, **Normal** ½, **Hard** the full
+horde — best runs are tracked per difficulty), then hit START.
 
 You are **James Carregan**. The world moves only when you do — every step is one in-game hour.
 Survive as many days as you can. When the last member of your party falls, your story ends.
+
+On touch devices an on-screen D-pad appears over the map: tap to step (hold to keep walking),
+and tap the center ✦ button to wait an hour.
 
 ## Controls
 

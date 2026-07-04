@@ -28,6 +28,13 @@ const INFECTION_TICKS = 48;        // hours until an infected member turns
 const RISE_TICKS = 6;              // hours until a corpse rises
 const ZOMBIE_CAP = 320;
 
+// Difficulty scales how much of the horde spawns (initial count, cap, night spawns)
+const DIFFICULTIES = {
+  easy:   { name: "Easy",   zombieMult: 0.25, desc: "A quiet valley. A quarter of the horde." },
+  normal: { name: "Normal", zombieMult: 0.5,  desc: "The standard apocalypse. Half the horde." },
+  hard:   { name: "Hard",   zombieMult: 1,    desc: "The full horde. Good luck out there." },
+};
+
 const INITIAL_ZOMBIES = 230;
 const INITIAL_SURVIVORS = 80;
 const INITIAL_FOOD_PILES = 150;

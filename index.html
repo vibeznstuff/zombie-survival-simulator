@@ -33,7 +33,17 @@
         Scavenge food, recruit survivors, and judge carefully who you trust —<br>
         every stranger is a pair of hands... or a knife in the dark.
       </div>
-      <div class="blink" id="press-start">PRESS ENTER TO BEGIN</div>
+      <div id="difficulty-picker">
+        <div class="diff-label">DIFFICULTY</div>
+        <div class="diff-row">
+          <button class="pxbtn diff-btn" data-diff="easy">EASY</button>
+          <button class="pxbtn diff-btn selected" data-diff="normal">NORMAL</button>
+          <button class="pxbtn diff-btn" data-diff="hard">HARD</button>
+        </div>
+        <div id="diff-desc" class="diff-desc">The standard apocalypse. Half the horde.</div>
+      </div>
+      <button id="btn-start" class="pxbtn good big">START</button>
+      <div class="blink" id="press-start">OR PRESS ENTER</div>
       <div class="title-keys">
         ARROWS / WASD&nbsp;move &nbsp;·&nbsp; SPACE&nbsp;wait &nbsp;·&nbsp; E&nbsp;eat &nbsp;·&nbsp; M&nbsp;medkit &nbsp;·&nbsp; C&nbsp;serum &nbsp;·&nbsp; 1-4&nbsp;formation
       </div>
@@ -60,7 +70,17 @@
     <div id="gameover-screen" class="overlay hidden">
       <div class="go-title">YOUR STORY ENDS HERE</div>
       <div id="go-stats" class="go-stats"></div>
-      <div class="blink">PRESS ENTER TO TRY AGAIN</div>
+      <button id="btn-retry" class="pxbtn good big">TRY AGAIN</button>
+      <div class="blink">OR PRESS ENTER</div>
+    </div>
+
+    <!-- Touch controls -->
+    <div id="dpad">
+      <button class="dpad-btn" data-act="up" style="grid-area:u" aria-label="Move up">▲</button>
+      <button class="dpad-btn" data-act="left" style="grid-area:l" aria-label="Move left">◀</button>
+      <button class="dpad-btn dpad-wait" data-act="wait" style="grid-area:c" aria-label="Wait one hour">✦</button>
+      <button class="dpad-btn" data-act="right" style="grid-area:r" aria-label="Move right">▶</button>
+      <button class="dpad-btn" data-act="down" style="grid-area:d" aria-label="Move down">▼</button>
     </div>
   </section>
 
@@ -95,14 +115,16 @@
       <div id="party-list"></div>
     </div>
 
-    <div class="panel" id="map-panel">
-      <div class="panel-title">MAP</div>
-      <canvas id="minimap" width="96" height="96"></canvas>
-    </div>
+    <div id="sidebar-bottom">
+      <div class="panel" id="map-panel">
+        <div class="panel-title">MAP</div>
+        <canvas id="minimap" width="96" height="96"></canvas>
+      </div>
 
-    <div class="panel" id="log-panel">
-      <div class="panel-title">LOG</div>
-      <div id="log"></div>
+      <div class="panel" id="log-panel">
+        <div class="panel-title">LOG</div>
+        <div id="log"></div>
+      </div>
     </div>
   </aside>
 
