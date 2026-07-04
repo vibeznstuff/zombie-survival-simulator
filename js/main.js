@@ -22,7 +22,7 @@ function newGame() {
   const fog = new Uint8Array(world.w * world.h);
   const diff = DIFFICULTIES[difficulty];
 
-  const leader = makeLeader();
+  const leader = makeLeader(diff.leaderImmun);
   state = {
     seed, world, fog,
     difficulty, zombieMult: diff.zombieMult,
@@ -54,9 +54,16 @@ function newGame() {
     state.npcs.push(s);
   }
 
-  // --- spawn loot: prefer building interiors and farms ---
+  // --- spawn serums first: buildings only, count scales with difficulty ---
+  const floorPool = [...world.buildingFloors];
+  for (let i = 0; i < diff.serums && floorPool.length > 0; i++) {
+    const p = floorPool.splice(Math.floor(rng() * floorPool.length), 1)[0];
+    state.loot.push({ x: p.x, y: p.y, kind: "serum", amt: 1 });
+  }
+
+  // --- spawn remaining loot: prefer building interiors and farms ---
   const lootSpots = [];
-  for (const f of world.buildingFloors) if (rng() < 0.45) lootSpots.push(f);
+  for (const f of floorPool) if (rng() < 0.45) lootSpots.push(f);
   for (const c of world.cropCells) if (rng() < 0.20) lootSpots.push(c);
   const spot = () => {
     if (lootSpots.length && rng() < 0.65) {
@@ -73,10 +80,6 @@ function newGame() {
   for (let i = 0; i < INITIAL_MEDKITS; i++) {
     const p = spot();
     state.loot.push({ x: p.x, y: p.y, kind: "medkit", amt: 1 });
-  }
-  for (let i = 0; i < INITIAL_SERUMS; i++) {
-    const p = spot();
-    state.loot.push({ x: p.x, y: p.y, kind: "serum", amt: 1 });
   }
 
   updateClock();

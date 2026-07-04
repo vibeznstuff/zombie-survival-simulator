@@ -11,8 +11,13 @@ sound effects. No frameworks, no build step, no dependencies: pure HTML5 canvas 
 
 Open `index.html` in any modern browser — desktop or mobile. That's it.
 
-Pick a difficulty on the title screen (**Easy** ¼ of the horde, **Normal** ½, **Hard** the full
-horde — best runs are tracked per difficulty), then hit START.
+Pick a difficulty on the title screen, then hit START. Best runs are tracked per difficulty.
+
+| Difficulty | Horde size | Serums on the map | James's immunity |
+| --- | --- | --- | --- |
+| Easy | ¼ | 8 | Immune — he can never turn |
+| Normal | ½ | 6 | Low |
+| Hard | full | 4 | None |
 
 You are **James Carregan**. The world moves only when you do — every step is one in-game hour.
 Survive as many days as you can. When the last member of your party falls, your story ends.
@@ -42,7 +47,8 @@ party well is the difference between a scratch and a funeral.
 - **Day/night cycle** — at night your sight shrinks and the dead get bold: they spawn faster and
   chase from farther away.
 - **Loot**: food crates (keep the party fed and heal wounds), medkits, and rare **serum** vials —
-  the only cure for infection. Buildings hold the best loot, and sometimes worse things.
+  the only cure for infection, found *only inside buildings*. Buildings hold the best loot, and
+  sometimes worse things.
 
 ## The people
 
