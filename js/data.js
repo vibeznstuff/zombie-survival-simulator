@@ -35,8 +35,8 @@ const DIFFICULTIES = {
             desc: "A quarter of the horde. James is immune to the virus." },
   normal: { name: "Normal", zombieMult: 0.5,  serums: 6, leaderImmun: 2,
             desc: "The standard apocalypse. Half the horde." },
-  hard:   { name: "Hard",   zombieMult: 1,    serums: 4, leaderImmun: 0,
-            desc: "The full horde, and James has no immunity. Good luck." },
+  hard:   { name: "Hard",   zombieMult: 1,    serums: 4, leaderImmun: 1,
+            desc: "The full horde, and every bite is a gamble. Good luck." },
 };
 
 const INITIAL_ZOMBIES = 230;

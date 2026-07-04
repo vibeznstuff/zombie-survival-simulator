@@ -17,7 +17,7 @@ Pick a difficulty on the title screen, then hit START. Best runs are tracked per
 | --- | --- | --- | --- |
 | Easy | ¼ | 8 | Immune — he can never turn |
 | Normal | ½ | 6 | Moderate |
-| Hard | full | 4 | None |
+| Hard | full | 4 | Low |
 
 You are **James Carregan**. The world moves only when you do — every step is one in-game hour.
 Survive as many days as you can. When the last member of your party falls, your story ends.
