@@ -122,14 +122,19 @@ const UI = (() => {
   function showTitle() { el("title-screen").classList.remove("hidden"); }
 
   function showGameOver(stats) {
-    const best = Number(localStorage.getItem("zss8_best_days") || 0);
-    const isRecord = stats.days > best;
-    if (isRecord) localStorage.setItem("zss8_best_days", String(stats.days));
+    const diffName = DIFFICULTIES[stats.difficulty]?.name || "Normal";
+    const bestKey = "zss8_best_days_" + (stats.difficulty || "normal");
+    let best = 0, isRecord = false;
+    try {
+      best = Number(localStorage.getItem(bestKey) || 0);
+      isRecord = stats.days > best;
+      if (isRecord) localStorage.setItem(bestKey, String(stats.days));
+    } catch (e) { /* storage unavailable — records just don't persist */ }
     el("go-stats").innerHTML = `
-      Survived <b>${stats.days}</b> day${stats.days === 1 ? "" : "s"} in the valley<br>
+      Survived <b>${stats.days}</b> day${stats.days === 1 ? "" : "s"} in the valley (${diffName})<br>
       Zombies destroyed: <b>${stats.zombieKills}</b> · Hostiles put down: <b>${stats.humanKills}</b><br>
       Survivors recruited: <b>${stats.recruited}</b> · Lost along the way: <b>${stats.lost}</b><br>
-      ${isRecord ? `<span style="color:var(--accent)">★ NEW RECORD ★</span>` : `Best run: <b>${Math.max(best, stats.days)}</b> days`}
+      ${isRecord ? `<span style="color:var(--accent)">★ NEW ${diffName.toUpperCase()} RECORD ★</span>` : `Best ${diffName} run: <b>${Math.max(best, stats.days)}</b> days`}
     `;
     el("gameover-screen").classList.remove("hidden");
   }

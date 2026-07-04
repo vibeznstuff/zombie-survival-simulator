@@ -11,6 +11,8 @@ let rng = Math.random;
 // Setup
 // ---------------------------------------------------------------------
 
+let difficulty = "normal";
+
 function newGame() {
   const seed = (Date.now() ^ (Math.random() * 0xffffffff)) >>> 0;
   rng = mulberry32(seed);
@@ -18,10 +20,12 @@ function newGame() {
 
   const world = genWorld(rng);
   const fog = new Uint8Array(world.w * world.h);
+  const diff = DIFFICULTIES[difficulty];
 
-  const leader = makeLeader();
+  const leader = makeLeader(diff.leaderImmun);
   state = {
     seed, world, fog,
+    difficulty, zombieMult: diff.zombieMult,
     tick: START_HOUR,
     hour: START_HOUR, day: 1, isNight: false,
     party: {
@@ -35,8 +39,9 @@ function newGame() {
     over: false,
   };
 
-  // --- spawn zombies ---
-  for (let i = 0; i < INITIAL_ZOMBIES; i++) {
+  // --- spawn zombies (scaled by difficulty) ---
+  const zombieCount = Math.round(INITIAL_ZOMBIES * diff.zombieMult);
+  for (let i = 0; i < zombieCount; i++) {
     const p = randomOpenTile(world, rng, { fromX: world.startX, fromY: world.startY, minDist: 7 });
     state.zombies.push(makeZombie(rng, p.x, p.y));
   }
@@ -49,9 +54,16 @@ function newGame() {
     state.npcs.push(s);
   }
 
-  // --- spawn loot: prefer building interiors and farms ---
+  // --- spawn serums first: buildings only, count scales with difficulty ---
+  const floorPool = [...world.buildingFloors];
+  for (let i = 0; i < diff.serums && floorPool.length > 0; i++) {
+    const p = floorPool.splice(Math.floor(rng() * floorPool.length), 1)[0];
+    state.loot.push({ x: p.x, y: p.y, kind: "serum", amt: 1 });
+  }
+
+  // --- spawn remaining loot: prefer building interiors and farms ---
   const lootSpots = [];
-  for (const f of world.buildingFloors) if (rng() < 0.45) lootSpots.push(f);
+  for (const f of floorPool) if (rng() < 0.45) lootSpots.push(f);
   for (const c of world.cropCells) if (rng() < 0.20) lootSpots.push(c);
   const spot = () => {
     if (lootSpots.length && rng() < 0.65) {
@@ -68,10 +80,6 @@ function newGame() {
   for (let i = 0; i < INITIAL_MEDKITS; i++) {
     const p = spot();
     state.loot.push({ x: p.x, y: p.y, kind: "medkit", amt: 1 });
-  }
-  for (let i = 0; i < INITIAL_SERUMS; i++) {
-    const p = spot();
-    state.loot.push({ x: p.x, y: p.y, kind: "serum", amt: 1 });
   }
 
   updateClock();
@@ -567,7 +575,9 @@ function advanceWorld() {
   // --- hourly events ---
   if (state.hour === 6) dawnMeal();
   if (state.hour === 3) nightTreachery();
-  if (state.isNight && state.hour % 2 === 0 && state.zombies.length < ZOMBIE_CAP) {
+  if (state.isNight && state.hour % 2 === 0 &&
+      state.zombies.length < Math.round(ZOMBIE_CAP * state.zombieMult) &&
+      rng() < state.zombieMult) {
     const p = randomOpenTile(world, rng, { fromX: party.x, fromY: party.y, minDist: 12, maxDist: 30 });
     state.zombies.push(makeZombie(rng, p.x, p.y));
   }
@@ -624,6 +634,7 @@ function checkGameOver() {
     Sfx.gameOver();
     UI.showGameOver({
       days: state.day,
+      difficulty: state.difficulty,
       zombieKills: state.stats.zombieKills,
       humanKills: state.stats.humanKills,
       recruited: state.stats.recruited,
@@ -711,5 +722,51 @@ document.getElementById("btn-crt").addEventListener("click", (e) => {
   stage.classList.toggle("crt");
   e.target.textContent = "CRT: " + (stage.classList.contains("crt") ? "ON" : "OFF");
 });
+
+// Difficulty picker (title screen)
+for (const btn of document.querySelectorAll(".diff-btn")) {
+  btn.addEventListener("click", () => {
+    difficulty = btn.dataset.diff;
+    document.querySelectorAll(".diff-btn").forEach(b => b.classList.toggle("selected", b === btn));
+    document.getElementById("diff-desc").textContent = DIFFICULTIES[difficulty].desc;
+  });
+}
+document.getElementById("btn-start").addEventListener("click", () => startGame());
+document.getElementById("btn-retry").addEventListener("click", () => startGame());
+
+// ---------------------------------------------------------------------
+// Touch D-pad (tap = one action, hold = repeat)
+// ---------------------------------------------------------------------
+
+const DPAD_ACTS = {
+  up: () => handleMove(0, -1),
+  down: () => handleMove(0, 1),
+  left: () => handleMove(-1, 0),
+  right: () => handleMove(1, 0),
+  wait: () => advanceWorld(),
+};
+
+let dpadTimer = null;
+function dpadStop() {
+  if (dpadTimer) { clearInterval(dpadTimer); dpadTimer = null; }
+}
+
+for (const btn of document.querySelectorAll(".dpad-btn")) {
+  const act = () => {
+    if (!started || !state || state.over || UI.isDialogOpen()) return;
+    DPAD_ACTS[btn.dataset.act]();
+  };
+  btn.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    act();
+    dpadStop();
+    dpadTimer = setInterval(act, 180);
+  });
+  for (const ev of ["pointerup", "pointerleave", "pointercancel"]) {
+    btn.addEventListener(ev, dpadStop);
+  }
+  // block long-press context menu / double-tap zoom on the pad
+  btn.addEventListener("contextmenu", (e) => e.preventDefault());
+}
 
 requestAnimationFrame(frame);

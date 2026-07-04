@@ -52,14 +52,14 @@ function makeSurvivor(rng, opts = {}) {
   return s;
 }
 
-function makeLeader() {
+function makeLeader(immun = 1) {
   return {
     id: 0,
     name: "James Carregan",
     sex: "Male", age: 32, str: 70,
     trust: 5,
     hp: 100, maxhp: 100,
-    immun: 1, traits: ["LOYAL"],
+    immun, traits: ["LOYAL"],
     level: 1, kills: 0, nextLvl: 3,
     infected: false, infTimer: 0,
     trustKnown: true,

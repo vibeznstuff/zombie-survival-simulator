@@ -28,11 +28,21 @@ const INFECTION_TICKS = 48;        // hours until an infected member turns
 const RISE_TICKS = 6;              // hours until a corpse rises
 const ZOMBIE_CAP = 320;
 
+// Difficulty scales the horde (initial count, cap, night spawns), the serum
+// supply, and how resistant James is to infection (immunity tier 0-3).
+const DIFFICULTIES = {
+  easy:   { name: "Easy",   zombieMult: 0.25, serums: 8, leaderImmun: 3,
+            desc: "A quarter of the horde. James is immune to the virus." },
+  normal: { name: "Normal", zombieMult: 0.5,  serums: 6, leaderImmun: 2,
+            desc: "The standard apocalypse. Half the horde." },
+  hard:   { name: "Hard",   zombieMult: 1,    serums: 4, leaderImmun: 1,
+            desc: "The full horde, and every bite is a gamble. Good luck." },
+};
+
 const INITIAL_ZOMBIES = 230;
 const INITIAL_SURVIVORS = 80;
 const INITIAL_FOOD_PILES = 150;
 const INITIAL_MEDKITS = 22;
-const INITIAL_SERUMS = 6;
 
 // --- Tile ids -----------------------------------------------------------
 const T = {
