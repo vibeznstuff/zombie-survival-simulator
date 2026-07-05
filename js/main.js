@@ -148,9 +148,18 @@ function handleMove(dx, dy) {
 
   const n = npcAt(nx, ny);
   if (n) {
-    if (n.hostileRevealed || n.trust <= 1) { engageHostile(n); advanceWorld(); }
-    else if (n.cooldown > 0) { UI.log(`${n.name} keeps their distance.`); }
-    else openEncounter(n); // free action, world paused while dialog is open
+    if (n.hostileRevealed || n.trust <= 1) { engageHostile(n); advanceWorld(); return; }
+    if (n.cooldown > 0) { UI.log(`${n.name} keeps their distance.`); return; }
+    // A Brawler in the party may pick a fight with a perfectly decent stranger
+    const brawler = state.party.members.find(m => hasTrait(m, "BRAWLER"));
+    if (brawler && rng() < BRAWLER_PROVOKE_CHANCE) {
+      UI.log(`${brawler.name}'s taunting provokes ${n.name} — weapons drawn!`, "bad");
+      n.trust = Math.min(n.trust, 1); // no talking your way back from this
+      engageHostile(n);
+      advanceWorld();
+      return;
+    }
+    openEncounter(n); // free action, world paused while dialog is open
     return;
   }
 
@@ -199,26 +208,43 @@ function collectLoot(l) {
 // Combat
 // ---------------------------------------------------------------------
 
-function attackZombie(z) {
-  const m = frontMember();
-  const dmg = memberDamage(m, rng);
-  if (dmg === 0) {
-    UI.log(`${m.name} flinches and misses!`, "warn");
-    Render.addFloater(z.x, z.y, "MISS", "#8a92a0");
-    return;
-  }
-  z.hp -= dmg;
-  Render.addFloater(z.x, z.y, "-" + dmg, "#f2f2e6");
-  Sfx.hit();
-  if (z.hp <= 0) {
-    state.zombies.splice(state.zombies.indexOf(z), 1);
-    state.stats.zombieKills++;
-    Sfx.zombieDie();
-    UI.log(`${m.name} destroys a zombie!`, "good");
-    if (gainKill(m)) {
-      Render.addFloater(state.party.x, state.party.y, "LVL UP!", "#7cff6b");
+// An enemy died: every member engaged in the fight earns 1 XP toward their
+// next level. The member who landed the killing blow also gets kill credit.
+function awardPartyXP(killer) {
+  killer.kills++;
+  let leveled = false;
+  for (const m of state.party.members) {
+    if (gainXP(m, 1)) {
+      leveled = true;
       UI.log(`${m.name} reached level ${m.level}! Stats increased.`, "purple");
-      Sfx.levelUp();
+    }
+  }
+  if (leveled) {
+    Render.addFloater(state.party.x, state.party.y, "LVL UP!", "#7cff6b");
+    Sfx.levelUp();
+  }
+}
+
+// The whole party piles onto one zombie: every member swings once per tick,
+// in formation order, until it drops. The killing blow earns the kill.
+function attackZombie(z) {
+  for (const m of state.party.members) {
+    if (z.hp <= 0) break;
+    const dmg = memberDamage(m, rng);
+    if (dmg === 0) {
+      UI.log(`${m.name} flinches and misses!`, "warn");
+      Render.addFloater(z.x, z.y, "MISS", "#8a92a0");
+      continue;
+    }
+    z.hp -= dmg;
+    Render.addFloater(z.x, z.y, "-" + dmg, "#f2f2e6");
+    Sfx.hit();
+    if (z.hp <= 0) {
+      state.zombies.splice(state.zombies.indexOf(z), 1);
+      state.stats.zombieKills++;
+      Sfx.zombieDie();
+      UI.log(`${m.name} destroys a zombie!`, "good");
+      awardPartyXP(m);
     }
   }
 }
@@ -253,36 +279,29 @@ function engageHostile(n) {
       return;
     }
   }
-  const m = frontMember();
-  const dmg = memberDamage(m, rng);
-  if (dmg > 0) {
+  // The whole party attacks, once each per tick. No instant retaliation —
+  // the hostile hits back on the world tick, like a zombie would.
+  for (const m of state.party.members) {
+    if (n.hp <= 0) break;
+    const dmg = memberDamage(m, rng);
+    if (dmg === 0) {
+      Render.addFloater(n.x, n.y, "MISS", "#8a92a0");
+      continue;
+    }
     n.hp -= dmg;
     Render.addFloater(n.x, n.y, "-" + dmg, "#f2f2e6");
     Sfx.hit();
-  } else {
-    Render.addFloater(n.x, n.y, "MISS", "#8a92a0");
-  }
-  if (n.hp <= 0) {
-    state.npcs.splice(state.npcs.indexOf(n), 1);
-    state.stats.humanKills++;
-    UI.log(`${m.name} put down ${n.name}.`, "good");
-    if (n.foodCarried > 0) {
-      state.party.food = Math.min(state.party.food + n.foodCarried, foodCap());
-      UI.log(`You take their ${n.foodCarried} food.`, "warn");
+    if (n.hp <= 0) {
+      state.npcs.splice(state.npcs.indexOf(n), 1);
+      state.stats.humanKills++;
+      UI.log(`${m.name} put down ${n.name}.`, "good");
+      if (n.foodCarried > 0) {
+        state.party.food = Math.min(state.party.food + n.foodCarried, foodCap());
+        UI.log(`You take their ${n.foodCarried} food.`, "warn");
+      }
+      awardPartyXP(m);
     }
-    if (gainKill(m)) {
-      Render.addFloater(state.party.x, state.party.y, "LVL UP!", "#7cff6b");
-      UI.log(`${m.name} reached level ${m.level}!`, "purple");
-      Sfx.levelUp();
-    }
-    return;
   }
-  // they hit back
-  const back = humanDamage(n, m, rng);
-  m.hp -= back;
-  Render.addFloater(state.party.x, state.party.y, "-" + back, "#ff5a4e");
-  Sfx.hurt();
-  if (m.hp <= 0) killMember(m, `was killed by ${n.name}`);
 }
 
 function killMember(m, how) {
@@ -549,7 +568,15 @@ function advanceWorld() {
       continue;
     }
 
-    if (dP <= chaseR) stepToward(z, party.x, party.y);
+    if (dP <= chaseR) {
+      stepToward(z, party.x, party.y);
+      // Collided with the party while hunting: the zombie has initiative
+      // and strikes immediately (its one attack this tick).
+      if (chebyshev(z.x, z.y, party.x, party.y) <= 1) {
+        zombieStrikesParty(z);
+        if (state.over) return;
+      }
+    }
     else if (prey && preyD <= 4) stepToward(z, prey.x, prey.y);
     else if (rng() < 0.4) stepRandom(z);
   }
@@ -559,6 +586,21 @@ function advanceWorld() {
     if (n.cooldown > 0) n.cooldown--;
     const dP = chebyshev(n.x, n.y, party.x, party.y);
     if (dP > ACTIVE_RADIUS) continue;
+    // revealed hostiles fight back: one strike per tick at the front member
+    if (n.hostileRevealed && dP <= 1) {
+      const m = frontMember();
+      if (m) {
+        const dmg = humanDamage(n, m, rng);
+        m.hp -= dmg;
+        Render.addFloater(party.x, party.y, "-" + dmg, "#ff5a4e");
+        Sfx.hurt();
+        if (m.hp <= 0) {
+          killMember(m, `was killed by ${n.name}`);
+          if (state.over) return;
+        }
+      }
+      continue; // attacking is their action for this tick
+    }
     // flee nearby zombies
     let threat = null, threatD = 4;
     for (const z of state.zombies) {
@@ -677,6 +719,13 @@ document.addEventListener("keydown", (e) => {
   if (e.repeat) return;
   const k = e.key;
 
+  // Help works everywhere and swallows all other input while open
+  if (UI.isHelpOpen()) {
+    if (k === "Escape" || k === "?") { e.preventDefault(); UI.hideHelp(); }
+    return;
+  }
+  if (k === "?") { e.preventDefault(); UI.showHelp(); return; }
+
   if (!started || (state && state.over)) {
     if (k === "Enter") { e.preventDefault(); startGame(); }
     return;
@@ -733,6 +782,8 @@ for (const btn of document.querySelectorAll(".diff-btn")) {
 }
 document.getElementById("btn-start").addEventListener("click", () => startGame());
 document.getElementById("btn-retry").addEventListener("click", () => startGame());
+document.getElementById("btn-help").addEventListener("click", () => UI.showHelp());
+document.getElementById("btn-help-close").addEventListener("click", () => UI.hideHelp());
 
 // ---------------------------------------------------------------------
 // Touch D-pad (tap = one action, hold = repeat)
@@ -753,7 +804,7 @@ function dpadStop() {
 
 for (const btn of document.querySelectorAll(".dpad-btn")) {
   const act = () => {
-    if (!started || !state || state.over || UI.isDialogOpen()) return;
+    if (!started || !state || state.over || UI.isDialogOpen() || UI.isHelpOpen()) return;
     DPAD_ACTS[btn.dataset.act]();
   };
   btn.addEventListener("pointerdown", (e) => {

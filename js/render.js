@@ -192,6 +192,11 @@ const Render = (() => {
         H: "#3a4a2a", Z: id % 2 ? PAL.zskin : PAL.zskinDark, R: "#ff3a2a",
         T: id % 2 ? "#4a4a3a" : "#5a4a5a", P: "#3a3a3a", K: "#1c1c1c",
       });
+    } else if (kind === "corpse") {
+      canvas = bakeSprite(SPR_CORPSE, {
+        r: "#6e1c12", S: PAL.skin2, E: PAL.black,
+        T: "#4a4a3a", P: "#3a3a3a", K: "#1c1c1c",
+      });
     } else if (kind === "crate") {
       canvas = bakeSprite(SPR_CRATE, { a: LOOT_PAL.a, b: LOOT_PAL.b, c: LOOT_PAL.c });
     } else if (kind === "medkit") {
@@ -270,6 +275,14 @@ const Render = (() => {
       fog[y * world.w + x] === 2;
     const px = (x) => (x - camX) * TILE;
     const py = (y) => (y - camY) * TILE;
+
+    // fallen party members, waiting to rise (drawn beneath the living)
+    for (const r of state.rising) {
+      if (!inView(r.x, r.y)) continue;
+      // in its final hour the body twitches...
+      const twitch = (r.at - state.tick <= 1) ? animFrame : 0;
+      sctx.drawImage(getSprite("corpse", 0, 0), px(r.x) + twitch, py(r.y));
+    }
 
     // loot
     for (const l of state.loot) {
@@ -370,6 +383,8 @@ const Render = (() => {
       if (fog[n.y * world.w + n.x] === 2) { mmctx.fillStyle = "#6bb8ff"; mmctx.fillRect(n.x, n.y, 1, 1); }
     for (const l of state.loot)
       if (fog[l.y * world.w + l.x] === 2) { mmctx.fillStyle = "#ffd24e"; mmctx.fillRect(l.x, l.y, 1, 1); }
+    for (const r of state.rising)
+      if (fog[r.y * world.w + r.x] === 2) { mmctx.fillStyle = "#8a3020"; mmctx.fillRect(r.x, r.y, 1, 1); }
     // party
     mmctx.fillStyle = "#ff3a2a";
     mmctx.fillRect(party.x - 1, party.y - 1, 3, 3);

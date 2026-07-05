@@ -27,6 +27,7 @@ const ZOMBIE_CHASE_NIGHT = 8;
 const INFECTION_TICKS = 48;        // hours until an infected member turns
 const RISE_TICKS = 6;              // hours until a corpse rises
 const ZOMBIE_CAP = 320;
+const BRAWLER_PROVOKE_CHANCE = 0.15; // chance a Brawler turns a stranger hostile
 
 // Difficulty scales the horde (initial count, cap, night spawns), the serum
 // supply, and how resistant James is to infection (immunity tier 0-3).
@@ -221,6 +222,27 @@ const SPR_ZOMBIE_1 = [
   "....PPP..PP.....",
   "....PP...P......",
   "....KK...K......",
+  "................",
+];
+
+// A fallen survivor, lying in a pool of blood, waiting to rise.
+// r blood pool  S skin  E closed eye  T shirt  P pants  K boots
+const SPR_CORPSE = [
+  "................",
+  "................",
+  "................",
+  "................",
+  "....rrrrrrrr....",
+  "...rrrrrrrrrr...",
+  "..rSSrTTTTrrrr..",
+  "..SESTTTTTPPKK..",
+  "..SSSTTTTTPPKK..",
+  "..rSSrTTTTrrrr..",
+  "...rrrrrrrrrr...",
+  "....rrrrrrrr....",
+  "................",
+  "................",
+  "................",
   "................",
 ];
 

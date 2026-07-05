@@ -11,6 +11,7 @@
 <header id="topbar">
   <div id="logo">ZOMBIE SURVIVAL SIMULATOR <span class="edition">8-BIT EDITION</span></div>
   <div id="topbar-right">
+    <button id="btn-help" class="pxbtn" title="How to play (?)">HELP [?]</button>
     <button id="btn-sound" class="pxbtn" title="Toggle sound">SOUND: ON</button>
     <button id="btn-crt" class="pxbtn" title="Toggle CRT scanlines">CRT: ON</button>
     <button id="btn-restart" class="pxbtn" title="Restart run">RESTART</button>
@@ -72,6 +73,17 @@
       <div id="go-stats" class="go-stats"></div>
       <button id="btn-retry" class="pxbtn good big">TRY AGAIN</button>
       <div class="blink">OR PRESS ENTER</div>
+    </div>
+
+    <!-- Help / field manual -->
+    <div id="help-screen" class="overlay hidden">
+      <div class="help-box">
+        <div class="help-head">
+          <span class="help-title">SURVIVOR'S FIELD MANUAL</span>
+          <button id="btn-help-close" class="pxbtn">✕ CLOSE</button>
+        </div>
+        <div id="help-body"></div>
+      </div>
     </div>
 
     <!-- Touch controls -->
