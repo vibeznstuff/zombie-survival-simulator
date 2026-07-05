@@ -120,9 +120,10 @@ function gainXP(member, amount = 1) {
   return false;
 }
 
-// Daily ration cost for one member (called at dawn)
+// Daily ration cost for one member (called at dawn). Base is RATION_PER_MEMBER;
+// Iron Gut only eats every other day, Glutton eats double.
 function rationCost(member, day) {
-  if (hasTrait(member, "IRON_GUT")) return day % 2 === 0 ? 1 : 0;
-  if (hasTrait(member, "GLUTTON")) return 2;
-  return 1;
+  if (hasTrait(member, "IRON_GUT")) return day % 2 === 0 ? RATION_PER_MEMBER : 0;
+  if (hasTrait(member, "GLUTTON")) return RATION_PER_MEMBER * 2;
+  return RATION_PER_MEMBER;
 }
