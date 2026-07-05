@@ -166,7 +166,9 @@ const UI = (() => {
       <h3>INFECTION</h3>
       <p>A bitten member turns into a zombie in <b>48 hours — inside your camp</b>. Cure them
       with a serum, or kick them from the party (✕ on their card) before it's too late.
-      Anyone who dies rises again. Infection risk per surviving hit, by immunity:</p>
+      Anyone who dies in combat leaves a <b>corpse where they fell</b> — it lies there for
+      6 hours, twitching near the end, then rises as a zombie. Infection risk per surviving
+      hit, by immunity:</p>
       <table><tr><th>Immunity</th><th>Infection / hit</th></tr>${immRows}</table>
 
       <h3>FORMATION</h3>

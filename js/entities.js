@@ -70,11 +70,12 @@ function makeLeader(immun = 1) {
 }
 
 function makeZombie(rng, x, y) {
+  const hp = randInt(rng, 40, 70);
   return {
     id: NEXT_ID++,
     x, y,
-    hp: randInt(rng, 40, 70),
-    maxhp: 70,
+    hp,
+    maxhp: hp,
     str: randInt(rng, 10, 26),
   };
 }

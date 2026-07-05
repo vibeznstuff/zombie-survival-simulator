@@ -225,6 +225,27 @@ const SPR_ZOMBIE_1 = [
   "................",
 ];
 
+// A fallen survivor, lying in a pool of blood, waiting to rise.
+// r blood pool  S skin  E closed eye  T shirt  P pants  K boots
+const SPR_CORPSE = [
+  "................",
+  "................",
+  "................",
+  "................",
+  "....rrrrrrrr....",
+  "...rrrrrrrrrr...",
+  "..rSSrTTTTrrrr..",
+  "..SESTTTTTPPKK..",
+  "..SSSTTTTTPPKK..",
+  "..rSSrTTTTrrrr..",
+  "...rrrrrrrrrr...",
+  "....rrrrrrrr....",
+  "................",
+  "................",
+  "................",
+  "................",
+];
+
 // --- Loot sprites -------------------------------------------------------
 const SPR_CRATE = [
   "................",

@@ -88,6 +88,8 @@ zombies.
 - Zombie bites can **infect** — an infected member turns in 48 hours, *inside your camp*, unless
   you find a serum or leave them behind. Immunity matters: an Immune member can never turn.
 - Anyone who dies **rises**. Party members, strangers, the person you turned away yesterday.
+  Fallen members leave a corpse where they died — it lies there for six hours, twitching in
+  its final moments, then gets back up.
 
 ## Under the hood
 
