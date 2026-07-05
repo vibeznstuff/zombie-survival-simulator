@@ -38,7 +38,7 @@ function makeSurvivor(rng, opts = {}) {
     trust: opts.trust != null ? opts.trust : randInt(rng, 0, 5),
     hp: maxhp, maxhp,
     immun, traits,
-    level: 1, kills: 0, nextLvl: 3,
+    level: 1, kills: 0, xp: 0, nextLvl: 3,
     infected: false, infTimer: 0,
     trustKnown: !!opts.trustKnown,
     tagline: pick(rng, TAGLINES),
@@ -60,7 +60,7 @@ function makeLeader(immun = 1) {
     trust: 5,
     hp: 100, maxhp: 100,
     immun, traits: ["LOYAL"],
-    level: 1, kills: 0, nextLvl: 3,
+    level: 1, kills: 0, xp: 0, nextLvl: 3,
     infected: false, infTimer: 0,
     trustKnown: true,
     tagline: "",
@@ -104,10 +104,12 @@ function rollInfection(member, rng) {
   return !member.infected && rng() < INFECTION_CHANCE[member.immun];
 }
 
-// Returns true if the member leveled up
-function gainKill(member) {
-  member.kills++;
-  if (member.kills >= member.nextLvl) {
+// Award XP toward the next level. Returns true if the member leveled up.
+// (Kill credit is a separate stat — every member engaged in the fight
+// earns XP when an enemy dies, not just whoever landed the final blow.)
+function gainXP(member, amount = 1) {
+  member.xp += amount;
+  if (member.xp >= member.nextLvl) {
     member.level++;
     member.nextLvl += member.level * 3;
     member.str = Math.min(120, Math.round(member.str * 1.1));

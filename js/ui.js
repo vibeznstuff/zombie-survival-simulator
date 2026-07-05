@@ -68,6 +68,7 @@ const UI = (() => {
           <span>STR <b>${m.str}</b></span>
           <span>IMM <b>${IMMUNITY_LABELS[m.immun]}</b></span>
           <span>KILLS <b>${m.kills}</b></span>
+          <span title="Experience toward next level">XP <b>${m.xp}/${m.nextLvl}</b></span>
           <span title="Trust">${trustTxt}</span>
         </div>
         <div class="bar"><div class="bar-fill ${hpCls}" style="width:${hpPct}%"></div></div>
@@ -152,8 +153,9 @@ const UI = (() => {
       zombie hunts you down and makes contact, it strikes first. Several zombies in contact
       each get a strike — all on your front member — while your party can only bring down one
       target per hour. Don't get surrounded.</p>
-      <p>Surviving a zombie hit risks <b>infection</b> (see below). Kills earn experience:
-      members level up for more strength and HP.</p>
+      <p>Surviving a zombie hit risks <b>infection</b> (see below). Every kill earns
+      <b>1 XP for every member engaged in the fight</b> — the whole party levels up together,
+      gaining strength and max HP. The killing blow also earns personal kill credit.</p>
 
       <h3>SURVIVOR ENCOUNTERS</h3>
       <p>Walk into a stranger to interact. Depending on their hidden <b>trust</b> (0-5 stars):</p>

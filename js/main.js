@@ -208,6 +208,23 @@ function collectLoot(l) {
 // Combat
 // ---------------------------------------------------------------------
 
+// An enemy died: every member engaged in the fight earns 1 XP toward their
+// next level. The member who landed the killing blow also gets kill credit.
+function awardPartyXP(killer) {
+  killer.kills++;
+  let leveled = false;
+  for (const m of state.party.members) {
+    if (gainXP(m, 1)) {
+      leveled = true;
+      UI.log(`${m.name} reached level ${m.level}! Stats increased.`, "purple");
+    }
+  }
+  if (leveled) {
+    Render.addFloater(state.party.x, state.party.y, "LVL UP!", "#7cff6b");
+    Sfx.levelUp();
+  }
+}
+
 // The whole party piles onto one zombie: every member swings once per tick,
 // in formation order, until it drops. The killing blow earns the kill.
 function attackZombie(z) {
@@ -227,11 +244,7 @@ function attackZombie(z) {
       state.stats.zombieKills++;
       Sfx.zombieDie();
       UI.log(`${m.name} destroys a zombie!`, "good");
-      if (gainKill(m)) {
-        Render.addFloater(state.party.x, state.party.y, "LVL UP!", "#7cff6b");
-        UI.log(`${m.name} reached level ${m.level}! Stats increased.`, "purple");
-        Sfx.levelUp();
-      }
+      awardPartyXP(m);
     }
   }
 }
@@ -286,11 +299,7 @@ function engageHostile(n) {
         state.party.food = Math.min(state.party.food + n.foodCarried, foodCap());
         UI.log(`You take their ${n.foodCarried} food.`, "warn");
       }
-      if (gainKill(m)) {
-        Render.addFloater(state.party.x, state.party.y, "LVL UP!", "#7cff6b");
-        UI.log(`${m.name} reached level ${m.level}!`, "purple");
-        Sfx.levelUp();
-      }
+      awardPartyXP(m);
     }
   }
 }

@@ -84,7 +84,8 @@ zombies.
 
 ## The dead
 
-- Kills earn **experience**: members level up, gaining strength and max HP.
+- Kills earn **experience** for every member engaged in the fight — the whole party levels
+  up together, gaining strength and max HP. The killing blow also earns personal kill credit.
 - Zombie bites can **infect** — an infected member turns in 48 hours, *inside your camp*, unless
   you find a serum or leave them behind. Immunity matters: an Immune member can never turn.
 - Anyone who dies **rises**. Party members, strangers, the person you turned away yesterday.
