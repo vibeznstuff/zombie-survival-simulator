@@ -42,7 +42,8 @@ const DIFFICULTIES = {
 
 const INITIAL_ZOMBIES = 230;
 const INITIAL_SURVIVORS = 80;
-const INITIAL_FOOD_PILES = 150;
+const INITIAL_FOOD_PILES = 55;
+const RATION_PER_MEMBER = 5;       // food each member eats at the dawn meal
 const INITIAL_MEDKITS = 22;
 
 // --- Tile ids -----------------------------------------------------------

@@ -74,7 +74,7 @@ function newGame() {
   for (let i = 0; i < INITIAL_FOOD_PILES; i++) {
     const p = spot();
     const r = rng();
-    const amt = r > 0.95 ? randInt(rng, 45, 70) : r > 0.7 ? randInt(rng, 20, 35) : randInt(rng, 5, 15);
+    const amt = r > 0.95 ? randInt(rng, 30, 60) : r > 0.7 ? randInt(rng, 10, 20) : randInt(rng, 3, 8);
     state.loot.push({ x: p.x, y: p.y, kind: "food", amt });
   }
   for (let i = 0; i < INITIAL_MEDKITS; i++) {

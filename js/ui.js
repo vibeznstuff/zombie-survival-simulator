@@ -137,7 +137,7 @@ const UI = (() => {
 
       <h3>RESOURCES</h3>
       <p><span class="warn">🍖 Food</span> — the engine of survival. The party eats at dawn
-      (1 ration each; no food = everyone starves for -12 HP). Between meals, EAT <kbd>E</kbd>
+      (5 rations each; no food = everyone starves for -12 HP). Between meals, EAT <kbd>E</kbd>
       spends 1 food to heal a wounded member +20 HP. Carry capacity grows with party size.</p>
       <p><span class="bad">✚ Medkits</span> — instant +40 HP to your most wounded member
       <kbd>M</kbd>. No food cost, but rare.</p>
