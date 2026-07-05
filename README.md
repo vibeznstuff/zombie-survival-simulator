@@ -35,10 +35,15 @@ and tap the center ✦ button to wait an hour.
 | M | Use a medkit on the most wounded member (+40 HP) |
 | C | Use a serum to cure an infected member |
 | 1 / 2 / 3 / 4 | Formation: strongest / healthiest / most immune first, or shield the weakest |
+| ? | Open the Survivor's Field Manual (in-game help) |
 | Enter | Start / restart |
 
-Whoever stands **first in the formation** takes and deals the blows in every fight — sorting your
-party well is the difference between a scratch and a funeral.
+Combat is a full-party affair: when you attack, **every member swings once**, in formation
+order, until the target drops — but enemies always answer by striking **only your front
+member**. Initiative goes to whoever made contact: charge a zombie and your party swings
+first; let one hunt you down and it bites first. Everyone attacks at most once per in-game
+hour, so getting swarmed means eating one hit per zombie while only killing one at a time.
+Sorting your formation well is the difference between a scratch and a funeral.
 
 ## The world
 
@@ -60,7 +65,7 @@ is a gamble: a stranger is a pair of hands, or a knife in the dark.
 
 | Trait | Effect |
 | --- | --- |
-| Brawler | +30% damage, but may provoke strangers into fights |
+| Brawler | +30% damage, but 15% chance to provoke friendly strangers into a fight |
 | Medic | Patches the whole party +3 HP every dawn |
 | Scout | +2 sight radius |
 | Coward | 35% chance to flinch and skip their attack |

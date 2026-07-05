@@ -117,6 +117,95 @@ const UI = (() => {
     el("encounter").classList.add("hidden");
   }
 
+  // ---- help / field manual -------------------------------------------------
+  let helpOpen = false;
+  let helpBuilt = false;
+
+  function buildHelp() {
+    const traitRows = Object.values(TRAITS)
+      .map(t => `<tr><td class="${t.kind}">${t.name}</td><td>${t.desc}</td></tr>`).join("");
+    const diffRows = Object.entries(DIFFICULTIES)
+      .map(([, d]) => `<tr><td>${d.name}</td><td>${Math.round(d.zombieMult * 100)}%</td><td>${d.serums}</td><td>${IMMUNITY_LABELS[d.leaderImmun]}</td></tr>`).join("");
+    const immRows = IMMUNITY_LABELS
+      .map((l, i) => `<tr><td>${l}</td><td>${Math.round(INFECTION_CHANCE[i] * 100)}%</td></tr>`).join("");
+
+    el("help-body").innerHTML = `
+      <h3>THE GOAL</h3>
+      <p>Survive as many days as you can. The world only moves when you do — every step or
+      wait is <b>one in-game hour</b>. When the last member of your party falls, the run ends.</p>
+
+      <h3>RESOURCES</h3>
+      <p><span class="warn">🍖 Food</span> — the engine of survival. The party eats at dawn
+      (1 ration each; no food = everyone starves for -12 HP). Between meals, EAT <kbd>E</kbd>
+      spends 1 food to heal a wounded member +20 HP. Carry capacity grows with party size.</p>
+      <p><span class="bad">✚ Medkits</span> — instant +40 HP to your most wounded member
+      <kbd>M</kbd>. No food cost, but rare.</p>
+      <p><span class="info">◉ Serums</span> — the <b>only cure for infection</b> <kbd>C</kbd>.
+      Found exclusively inside buildings, and only a handful exist per run. Choosing who gets
+      one is the hardest call in the game.</p>
+
+      <h3>ZOMBIE ENCOUNTERS</h3>
+      <p>Walk into a zombie to fight. <b>Your entire party attacks</b> — every member swings
+      once, in formation order, until the zombie drops. The zombie answers by striking
+      <b>only your front member</b>, once per hour.</p>
+      <p><b>Initiative matters:</b> if you charge a zombie, your party swings first. If a
+      zombie hunts you down and makes contact, it strikes first. Several zombies in contact
+      each get a strike — all on your front member — while your party can only bring down one
+      target per hour. Don't get surrounded.</p>
+      <p>Surviving a zombie hit risks <b>infection</b> (see below). Kills earn experience:
+      members level up for more strength and HP.</p>
+
+      <h3>SURVIVOR ENCOUNTERS</h3>
+      <p>Walk into a stranger to interact. Depending on their hidden <b>trust</b> (0-5 stars):</p>
+      <p>★★★+ they ask to <b>join</b> · ★★ they may <b>shake you down</b> for food (pay or
+      fight) · ★ or less they <b>attack on sight</b>.</p>
+      <p>Trust is hidden (<b>?????</b>) unless a <i>Judge of Character</i> travels with you.
+      Recruits bring their carried food and their traits — but low-trust members may rob you
+      at 3 a.m. and vanish. Killing hostiles earns XP and their food.</p>
+
+      <h3>INFECTION</h3>
+      <p>A bitten member turns into a zombie in <b>48 hours — inside your camp</b>. Cure them
+      with a serum, or kick them from the party (✕ on their card) before it's too late.
+      Anyone who dies rises again. Infection risk per surviving hit, by immunity:</p>
+      <table><tr><th>Immunity</th><th>Infection / hit</th></tr>${immRows}</table>
+
+      <h3>FORMATION</h3>
+      <p>The roster order is your battle line. The <b>front member</b> (slot 1) takes every
+      enemy hit. Sort with <kbd>1</kbd> strongest first · <kbd>2</kbd> healthiest first ·
+      <kbd>3</kbd> most immune first · <kbd>4</kbd> shield the weakest.</p>
+
+      <h3>TRAITS</h3>
+      <p>Every survivor carries 1-2 personality traits. Green helps, red hurts, blue cuts
+      both ways. Party-wide traits (Scout, Night Owl, Judge, Charmer, Light Fingers' bonus)
+      work if <i>anyone</i> alive in the party has them.</p>
+      <table><tr><th>Trait</th><th>Effect</th></tr>${traitRows}</table>
+
+      <h3>DAY & NIGHT</h3>
+      <p>At night (21:00-06:00) your sight shrinks, zombies chase from farther away, and new
+      ones rise. Buildings hold the best loot — and sometimes something worse.</p>
+
+      <h3>DIFFICULTY</h3>
+      <table><tr><th>Mode</th><th>Horde</th><th>Serums</th><th>James's immunity</th></tr>${diffRows}</table>
+
+      <h3>CONTROLS</h3>
+      <p><kbd>←↑↓→</kbd>/<kbd>WASD</kbd> move & fight & talk · <kbd>SPACE</kbd> wait 1 hour ·
+      <kbd>E</kbd> eat · <kbd>M</kbd> medkit · <kbd>C</kbd> serum · <kbd>1-4</kbd> formation ·
+      <kbd>?</kbd> this manual. On touch screens, use the on-screen D-pad (hold to keep
+      walking, ✦ to wait).</p>
+    `;
+    helpBuilt = true;
+  }
+
+  function showHelp() {
+    if (!helpBuilt) buildHelp();
+    helpOpen = true;
+    el("help-screen").classList.remove("hidden");
+  }
+  function hideHelp() {
+    helpOpen = false;
+    el("help-screen").classList.add("hidden");
+  }
+
   // ---- overlays ----------------------------------------------------------------
   function hideTitle() { el("title-screen").classList.add("hidden"); }
   function showTitle() { el("title-screen").classList.remove("hidden"); }
@@ -145,6 +234,8 @@ const UI = (() => {
     renderHUD, renderParty,
     showEncounter, hideEncounter,
     isDialogOpen: () => dialogOpen,
+    showHelp, hideHelp,
+    isHelpOpen: () => helpOpen,
     hideTitle, showTitle, showGameOver, hideGameOver,
   };
 })();
