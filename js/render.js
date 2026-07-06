@@ -297,6 +297,10 @@ const Render = (() => {
       const kind = (n.hostileRevealed) ? "bandit" : "civ";
       const bob = (n.id + animFrame) % 2;
       sctx.drawImage(getSprite(kind, n.id, bob), px(n.x), py(n.y) - (bob ? 1 : 0));
+      if (n.infected && animFrame) {
+        sctx.fillStyle = "#ff3a2a";
+        sctx.fillRect(px(n.x) + 7, py(n.y) - 4, 2, 2);
+      }
     }
 
     // zombies

@@ -389,12 +389,19 @@ function kickMember(m) {
   const idx = p.members.indexOf(m);
   if (idx < 0) return;
   p.members.splice(idx, 1);
+  // Left behind at the party's tile, as a wandering survivor sprite. Being
+  // cast out costs them a point of trust. The infected keep their countdown
+  // and will turn into a zombie out in the world when it runs out.
   m.x = p.x; m.y = p.y;
   m.cooldown = 120;
-  if (!m.infected) state.npcs.push(m); // the infected wander off to their fate
+  m.trust = Math.max(0, m.trust - 1);
+  m.trustKnown = true;
+  m.hostileRevealed = false;
+  state.npcs.push(m);
   UI.log(m.infected
-    ? `You left ${m.name} behind. They didn't argue. They knew.`
-    : `${m.name} was kicked from the party.`, m.infected ? "warn" : "");
+    ? `You left ${m.name} behind — the infection will take them soon.`
+    : `${m.name} was cast out of the party. (Trust now ${m.trust})`,
+    m.infected ? "warn" : "");
   refreshUI();
 }
 
@@ -581,9 +588,27 @@ function advanceWorld() {
     else if (rng() < 0.4) stepRandom(z);
   }
 
-  // --- NPCs act ---
-  for (const n of state.npcs) {
+  // --- NPCs act (snapshot: infected NPCs may turn and leave the array) ---
+  for (const n of [...state.npcs]) {
+    if (!state.npcs.includes(n)) continue;
     if (n.cooldown > 0) n.cooldown--;
+
+    // Infected survivors out in the world keep counting down, then turn where
+    // they stand — you can watch a cast-out member become a zombie.
+    if (n.infected) {
+      n.infTimer--;
+      const visible = chebyshev(n.x, n.y, party.x, party.y) <= sightRadius() + 2;
+      if (n.infTimer === 12 && visible) UI.log(`${n.name} is pale and shaking in the distance...`, "warn");
+      if (n.infTimer <= 0) {
+        state.npcs.splice(state.npcs.indexOf(n), 1);
+        const z = makeZombie(rng, n.x, n.y);
+        z.str = Math.max(z.str, Math.round(n.str * 0.6));
+        state.zombies.push(z);
+        if (visible) UI.log(`☣ ${n.name} has turned into a zombie!`, "bad");
+        continue;
+      }
+    }
+
     const dP = chebyshev(n.x, n.y, party.x, party.y);
     if (dP > ACTIVE_RADIUS) continue;
     // revealed hostiles fight back: one strike per tick at the front member

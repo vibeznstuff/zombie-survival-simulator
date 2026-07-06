@@ -164,6 +164,9 @@ const UI = (() => {
       <p>Trust is hidden (<b>?????</b>) unless a <i>Judge of Character</i> travels with you.
       Recruits bring their carried food and their traits — but low-trust members may rob you
       at 3 a.m. and vanish. Killing hostiles earns XP and their food.</p>
+      <p><b>Casting someone out</b> (✕ on their card) leaves them behind in the world as a
+      wandering survivor — they lose a point of trust for the betrayal, and if they were
+      infected, you'll see them turn into a zombie where they roam when their timer runs out.</p>
 
       <h3>INFECTION</h3>
       <p>A bitten member turns into a zombie in <b>48 hours — inside your camp</b>. Cure them
