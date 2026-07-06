@@ -80,7 +80,8 @@ is a gamble: a stranger is a pair of hands, or a knife in the dark.
 
 Low-trust survivors attack on sight or shake you down for food. Recruit an unknown and they might
 steal your supplies at 3 a.m. and vanish. More mouths need more food — but more hands kill more
-zombies.
+zombies. You can also **Attack & Loot** any survivor who offers to join — turn on even a friendly
+face to seize the food they carry, at the cost of the recruit and whatever fight they put up.
 
 ## The dead
 
