@@ -379,6 +379,17 @@ function openEncounter(n) {
           Sfx.decline();
         },
       },
+      {
+        label: "Attack & Loot", cls: "bad", onClick: () => {
+          // You strike first — no weapon-drawn intro, no Charmer defuse.
+          UI.log(`You turn on ${n.name} for their supplies!`, "bad");
+          n.hostileRevealed = true;
+          n.pacified = false;
+          n.trust = 0;
+          engageHostile(n);   // whole party attacks; loots their food on the kill
+          advanceWorld();     // survivor retaliates on the tick if they're still standing
+        },
+      },
     ],
   });
 }
